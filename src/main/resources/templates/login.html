@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+
+    <title>Login page</title>
+    <link rel="stylesheet" th:href="@{/css/common/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/common/style.css}">
+</head>
+<body>
+<header class="container-fluid ">
+    <div class="container">
+        <h1 class="my-2">Blog</h1>
+        <nav class="navbar navbar-expand-lg navbar-light bg-info">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link navbar-hover" aria-current="page" th:href="@{/home}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link navbar-hover" th:href="@{/about}">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link navbar-hover " th:href="@{/contact}">Contact</a>
+                        </li>
+                        <li sec:authorize="!hasRole('USER')" class="nav-item navbar-hover ">
+                            <a class="nav-link navbar-hover text-white fw-bold active" th:href="@{/login}">Login</a>
+                        </li>
+                        <li sec:authorize="hasRole('USER')" class="nav-item navbar-hover">
+                            <a class="nav-link navbar-hover" th:href="@{/logout}"
+                               th:text="'Logout(' + ${userLogged?.username} + ')'"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+<div class="container-fluid">
+    <div class="container">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mt-2">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/home}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Login</li>
+            </ol>
+        </nav>
+        <h2>Login</h2>
+        <h4 th:text="${msgSuccess}" class="text-success"></h4>
+        <p class="text-secondary">Please fill out the following form with your login credentials.</p>
+        <p class="text-secondary">Fields with <span class="text-danger">*</span> are required </p>
+        <div class="row">
+            <form th:action="@{/login-check}" method="post" class="col-4">
+                <div class="mb-3">
+                    <label for="usernameInput" class="form-label">
+                        Username
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="form-control" id="usernameInput" name="username" placeholder="Username"
+                           required min="5" max="30"/>
+                    <!--          <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>-->
+                </div>
+                <div class="mb-3">
+                    <label for="passwordInput" class="form-label">
+                        Password
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input type="password" class="form-control" id="passwordInput" name="password"
+                           placeholder="Password" required min="5" max="30"/>
+                </div>
+                <!--        <div class="mb-3 form-check">-->
+                <!--          <input type="checkbox" class="form-check-input" id="exampleCheck1">-->
+                <!--          <label class="form-check-label" for="exampleCheck1">Check me out</label>-->
+                <!--        </div>-->
+                <button type="submit" class="btn btn-primary">Login</button>
+
+            </form>
+            <!-- Button trigger modal -->
+            <!--        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#registerModal">-->
+            <!--          -->
+            <!--          Register-->
+            <!--        </button>-->
+            <p class="mt-2">
+                You are new User in Blog?
+                <a href="#" data-toggle="modal" class="text-decoration-none"
+                            data-target="#registerModal">Create an account</a>
+            </p>
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="registerModalLabel">New User</h5>
+                            <button type="button" class="close border-0" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form th:action="@{/register}" method="post" th:object="${userRegister}">
+
+                                <div class="mb-3">
+                                    <label for="resUsernameInput" class="form-label">
+                                        Username
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" id="resUsernameInput" name="username"
+                                           placeholder="Enter your username" required min="5" max="30"/>
+                                    <!--          <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>-->
+                                </div>
+                                <div class="mb-3">
+                                    <label for="resPasswordInput" class="form-label">
+                                        Password
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="password" class="form-control" id="resPasswordInput" name="password"
+                                           placeholder="Enter your password" required min="5" max="30"/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="resInputEmail1" class="form-label">
+                                        Email address
+                                        <!--                      <span class="text-danger">*</span>-->
+                                    </label>
+                                    <input type="email" class="form-control" id="resInputEmail1" name="email"
+                                           placeholder="Enter your email"/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="resInputProfile" class="form-label">
+                                        Profile
+                                        <!--                      <span class="text-danger">*</span>-->
+                                    </label>
+                                    <input type="text" class="form-control" id="resInputProfile" name="profile"
+                                           placeholder="Profile..."/>
+                                </div>
+                                <input type="submit" class="btn btn-primary" value="Create"/>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="container border-top">
+    <footer class="py-3 my-4">
+        <p class="text-center text-muted">Copyright © 2016 by My Company</p>
+        <p class="text-center text-muted">All Rights Reserved</p>
+    </footer>
+</div>
+<!--  <script th:src="@{/js/common/bootstrap.min.js}"></script>-->
+<!--  <script th:src="@{/js/common/bootstrap.bundle.min.js}"></script>-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

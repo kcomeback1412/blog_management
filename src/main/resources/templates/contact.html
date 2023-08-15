@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>About Us</title>
+    <link rel="stylesheet" th:href="@{/css/common/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/common/style.css}">
+</head>
+<body>
+<header class="container-fluid ">
+    <div class="container">
+        <h1 class="my-2">Blog</h1>
+        <nav class="navbar navbar-expand-lg navbar-light bg-info">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link navbar-hover" aria-current="page"
+                               th:href="@{/home}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link navbar-hover active text-white fw-bold" th:href="@{/about}">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link navbar-hover" th:href="@{/contact}">Contact</a>
+                        </li>
+                        <li sec:authorize="!hasRole('USER')" class="nav-item navbar-hover ">
+                            <a class="nav-link navbar-hover" th:href="@{/login}">Login</a>
+                        </li>
+                        <li sec:authorize="hasRole('USER')" class="nav-item navbar-hover">
+                            <a class="nav-link navbar-hover" th:href="@{/logout}"
+                               th:text="'Logout(' + ${userLogged?.username} + ')'"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+<div class="container-fluid">
+    <div class="container">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mt-2">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/home}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Contact</li>
+            </ol>
+        </nav>
+        <div class="row">
+            <h2>About</h2>
+            <h4 th:text="${msgSuccess}" class="text-success"></h4>
+            <p class="text-secondary">If you have business inquiries or other question, please fill out the following
+                form to contact us. Thank you ! .</p>
+            <p class="text-secondary">Fields with <span class="text-danger">*</span> are required </p>
+            <div class="row">
+                <form th:action="@{/contact}" method="post" class="col-4" th:object="${newContact}">
+                    <div class="mb-3">
+                        <label for="nameInput" class="form-label">
+                            Name
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="nameInput" name="name"
+                               placeholder="Name"
+                               required min="5" max="30"/>
+                        <!--          <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>-->
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="emailInput" class="form-label">
+                            Email
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="email" class="form-control" id="emailInput" name="email"
+                               placeholder="Email"
+                               required min="5" max="30"/>
+                        <!--          <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>-->
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="subjectInput" class="form-label">
+                            Subject
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="subjectInput" name="subject"
+                               placeholder="Subject"
+                               required min="5" max="30"/>
+                        <!--          <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>-->
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="inputContent" class="form-label">
+                            Content
+                            <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control" id="inputContent" rows="6" name="content" required
+                                  placeholder="Content..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Send</button>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container border-top">
+    <footer class="py-3 my-4">
+        <p class="text-center text-muted">Copyright © 2016 by My Company</p>
+        <p class="text-center text-muted">All Rights Reserved</p>
+    </footer>
+</div>
+</body>
+</html>

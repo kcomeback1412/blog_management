@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>About Us</title>
+    <link rel="stylesheet" th:href="@{/css/common/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/common/style.css}">
+</head>
+<body>
+    <header class="container-fluid ">
+    <div class="container">
+        <h1 class="my-2">Blog</h1>
+        <nav class="navbar navbar-expand-lg navbar-light bg-info">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link navbar-hover" aria-current="page"
+                               th:href="@{/home}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link navbar-hover active text-white fw-bold" th:href="@{/about}">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link navbar-hover" th:href="@{/contact}">Contact</a>
+                        </li>
+                        <li sec:authorize="!hasRole('USER')" class="nav-item navbar-hover ">
+                            <a class="nav-link navbar-hover text-white fw-bold active" th:href="@{/login}" >Login</a>
+                        </li>
+                        <li sec:authorize="hasRole('USER')" class="nav-item navbar-hover" >
+                            <a class="nav-link navbar-hover" th:href="@{/logout}" th:text="'Logout(' + ${userLogged?.username} + ')'"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+    <div class="container-fluid">
+    <div class="container">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb" class="mt-2">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/home}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">About</li>
+            </ol>
+        </nav>
+        <div class="row">
+            <h2>About</h2>
+            <article>
+                <h3>In the Garden</h3>
+                <p>Mama was in the garden. "What are you doing?" Johnny asked. She said she was planting roses. Roses
+                    are flowers. They are very pretty. They are usually red. Roses have thorns. His mama said, "Thorns
+                    will stick you. Be careful around thorns." Johnny went to the front yard. His dog Rex was waiting
+                    for him. Johnny picked up a stick and threw it. Rex chased the stick. He brought the stick back.
+                    Johnny ran around the house. Rex chased him. Johnny ran through the garden. Rex ran through the
+                    garden. Mom yelled at Johnny and Rex. She told them to play somewhere else. She told them to stay
+                    out of the garden. Johnny apologized to his mom. He went to the garage and got his bike. He went for
+                    a bike ride. Rex ran next to the bike. </p>
+            </article>
+        </div>
+    </div>
+</div>
+    <div class="container border-top">
+        <footer class="py-3 my-4">
+            <p class="text-center text-muted">Copyright © 2016 by My Company</p>
+            <p class="text-center text-muted">All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>

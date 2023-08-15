@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Home page</title>
+    <link rel="stylesheet" th:href="@{/css/common/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/common/style.css}">
+</head>
+<body>
+<header class="container-fluid ">
+    <div class="container">
+        <h1 class="my-2">Blog</h1>
+        <nav class="navbar navbar-expand-lg navbar-light bg-info">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link navbar-hover active text-white fw-bold" aria-current="page"
+                               th:href="@{/home}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link navbar-hover" th:href="@{/about}">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link navbar-hover" th:href="@{/contact}">Contact</a>
+                        </li>
+                        <li sec:authorize="!hasRole('USER')" class="nav-item navbar-hover ">
+                            <a class="nav-link navbar-hover" th:href="@{/login}">Login</a>
+                        </li>
+                        <li sec:authorize="hasRole('USER')" class="nav-item navbar-hover">
+                            <a class="nav-link navbar-hover" th:href="@{/logout}"
+                               th:text="'Logout(' + ${userLogged?.username} + ')'"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <div class="col-10 mt-3">
+                <div class="mb-3 w-90">
+                    <article>
+                        <h4 class="border-bottom " th:text="${post.title}"></h4>
+                        <div>
+                            <span class="text-secondary"
+                                  th:text="'posted by '+ ${post.users.username} + ' on ' + ${post.createTime}"></span>
+                            <p th:text="${post.content}"></p>
+
+                            <div class="mt-2 bg-info-light">
+                                <p class="px-1 mb-0 py-1">
+                                    Tags:
+                                    <span th:each="tag : ${post.tagToArr()}">
+                        <a href="#" th:text="${tag}" class="me-2"></a>
+                      </span>
+                                </p>
+                                <p class="px-1 d-flex flex-wrap mb-0 py-1">
+                                    <span class="text-secondary d-inline-block"
+                                          th:text="'Last updated on ' + ${post.updateTime}"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </article>
+                    <div class="mt-2">
+                        <h5>5 comments recent:</h5>
+                        <th:block th:each="comment : ${comments}">
+                            <p class="mb-1 border-top">
+                                <span th:text="${comment.content}" class="d-block"></span>
+                                <p class="text-secondary text-end"
+                                      th:text="'Post on ' + ${comment.createTime} + ' by ' + ${comment.author}"></p>
+                            </p>
+                        </th:block>
+                        <div>
+                            <form class="" th:action="@{'/home/post/' + ${post.id} + '/create-comment' }"
+                                  method="post" th:object="${newComment}">
+
+                                <div class="mb-3 border-top">
+                                    <input class="form-control" id="inputContent" rows="3" name="content" required
+                                           placeholder="Enter your comment..."/>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="hidden" name="createTime"/>
+                                    <input type="hidden" name="author" th:value="${userLogged.username}"/>
+                                    <input type="hidden" name="email" th:value="${userLogged.email}"/>
+                                    <input type="hidden" name="post" th:value="${post.id}"/>
+                                </div>
+<!--                                <input type="submit" class="btn btn-primary" value="Comment"/>-->
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-2 mt-3">
+                <nav sec:authorize="hasRole('USER')" class="navbar bg-light p-0 mb-2">
+                    <div class="container-fluid p-0">
+                        <ul class="navbar-nav w-100">
+                            <li class="nav-item bg-info d-inline-block w-100 px-2">
+                                <h6 class="w-100 m-0 py-2" th:text="${userLogged.username}"></h6>
+                            </li>
+                            <li class="nav-item px-2">
+                                <a class="nav-link" th:href="@{/home/create-post}">Create New Post</a>
+                            </li>
+                            <li class="nav-item px-2">
+                                <a class="nav-link" th:href="@{/home/manage-post}">Manage Post</a>
+                            </li>
+                            <li class="nav-item px-2">
+                                <a class="nav-link" th:href="@{/home/approve-comment}">Approve Comment</a>
+                            </li>
+                            <li class="nav-item px-2">
+                                <a class="nav-link" th:href="@{/logout}">Logout</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="mb-2">
+                    <h6 class="w-100 m-0 p-2 bg-info">Top 5 tags</h6>
+                    <p class="px-2 ">
+                        <th:block th:each="tag : ${topFiveTags}">
+                            <a class="me-2" th:text="${tag.name}" href="#"></a>
+                        </th:block>
+                    </p>
+                </div>
+
+                <div class="">
+                    <h6 class="w-100 m-0 p-2 bg-info">Recent Comment</h6>
+                    <p class="px-2  ">
+                    <p class="px-2  ">
+                        <span th:text="${lastComment.author} + ' on '"></span>
+                        <a th:href="@{'/home/post/' + ${lastComment.post.id}}" th:text="${lastComment.post.title}"></a>
+                    </p>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container border-top">
+    <footer class="py-3 my-4">
+        <p class="text-center text-muted">Copyright © 2016 by My Company</p>
+        <p class="text-center text-muted">All Rights Reserved</p>
+    </footer>
+</div>
+</body>
+</html>

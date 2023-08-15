@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Home page</title>
+    <link rel="stylesheet" th:href="@{/css/common/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/common/style.css}">
+</head>
+<body>
+<header class="container-fluid ">
+    <div class="container">
+        <h1 class="my-2">Blog</h1>
+        <nav class="navbar navbar-expand-lg navbar-light bg-info">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link navbar-hover active text-white fw-bold" aria-current="page"
+                               th:href="@{/home}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link navbar-hover" th:href="@{/about}">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link navbar-hover" th:href="@{/contact}">Contact</a>
+                        </li>
+                        <li sec:authorize="!hasRole('USER')" class="nav-item navbar-hover ">
+                            <a class="nav-link navbar-hover" th:href="@{/login}">Login</a>
+                        </li>
+                        <li sec:authorize="hasRole('USER')" class="nav-item navbar-hover">
+                            <a class="nav-link navbar-hover" th:href="@{/logout}"
+                               th:text="'Logout(' + ${userLogged?.username} + ')'"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <div class="col-10 mt-3">
+                <th:block th:each="post : ${postPages.content}">
+                    <div class="mb-3 w-90">
+                        <h4 class="border-bottom " th:text="${post.title}"></h4>
+                        <div>
+                            <span class="text-secondary"
+                                  th:text="'posted by '+ ${post.users.username} + ' on ' + ${post.createTime}"></span>
+                            <p th:text="${post.content}"></p>
+
+                            <div class="mt-2 bg-info-light">
+                                <p class="px-1 mb-0 py-1">
+                                    Tags:
+                                    <span th:each="tag : ${post.tagToArr()}">
+                      <a href="#" th:text="${tag}" class="me-2"></a>
+                    </span>
+                                </p>
+                                <p class="px-1 d-flex flex-wrap mb-0 py-1">
+                                    <a th:href="@{'/home/post/' + ${post.id} }"
+                                       class="d-inline-block border-end border-dark pe-2 me-2">Permalink</a>
+                                    <a th:href="@{'/home/post/' + ${post.id} }"
+                                       class="d-inline-block border-end border-dark pe-2 me-2"
+                                       th:text="'Comment(' + ${post.comments.size() +')'}">
+                                    </a>
+                                    <span class="text-secondary d-inline-block"
+                                          th:text="'Last updated on ' + ${post.updateTime}"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+                <nav aria-label="Page navigation example" class="d-flex justify-content-center w-90">
+                    <ul class="pagination">
+                        <!--              <li th:attr="class=${currentPage > 1 ? 'page-item' : 'page-item disabled'}">-->
+                        <!--                <a th:href="@{'/?pageNum=' + ${currentPage - 1}}" class="page-link ">Previous</a>-->
+                        <!--              </li>-->
+                        <th:block th:each="i: ${#numbers.sequence(1, postPages.totalPages)}">
+                            <li th:attr="class=${postPages == null ? 'page-item disabled' : 'page-item'}">
+                                <a class="page-link"
+                                   th:href="@{'/?pageNum=' + ${i}}"
+                                   th:text="${i}"></a>
+                            </li>
+                        </th:block>
+                        <!--              <li th:attr="class=${currentPage < certs.totalPages ? 'page-item' : 'page-item disabled'}">-->
+                        <!--                <a th:href="@{'/?pageNum=' + ${currentPage + 1}}" class="page-link">Next</a>-->
+                        <!--              </li>-->
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-2 mt-3">
+                <nav sec:authorize="hasRole('USER')" class="navbar bg-light p-0 mb-2">
+                    <div class="container-fluid p-0">
+                        <ul class="navbar-nav w-100">
+                            <li class="nav-item bg-info d-inline-block w-100 px-2">
+                                <h6 class="w-100 m-0 py-2" th:text="${userLogged.username}"></h6>
+                            </li>
+                            <li class="nav-item px-2">
+                                <a class="nav-link" th:href="@{/home/create-post}">Create New Post</a>
+                            </li>
+                            <li class="nav-item px-2">
+                                <a class="nav-link" th:href="@{/home/manage-post}">Manage Post</a>
+                            </li>
+                            <li class="nav-item px-2">
+                                <a class="nav-link" th:href="@{/home/approve-comment}">Approve Comment</a>
+                            </li>
+                            <li class="nav-item px-2">
+                                <a class="nav-link" th:href="@{/logout}">Logout</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="mb-2">
+                    <h6 class="w-100 m-0 p-2 bg-info">Top 5 tags</h6>
+                    <p class="px-2 ">
+                        <th:block th:each="tag : ${topFiveTags}">
+                            <a class="me-2" th:text="${tag.name}" href="#"></a>
+                        </th:block>
+                    </p>
+                </div>
+
+                <div class="">
+                    <h6 class="w-100 m-0 p-2 bg-info">Recent Comment</h6>
+                    <p class="px-2  ">
+                        <span th:text="${lastComment.author} + ' on '"></span>
+                        <a th:href="@{'/home/post/' + ${lastComment.post.id}}" th:text="${lastComment.post.title}"></a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container border-top">
+    <footer class="py-3 my-4">
+        <p class="text-center text-muted">Copyright © 2016 by My Company</p>
+        <p class="text-center text-muted">All Rights Reserved</p>
+    </footer>
+</div>
+</body>
+</html>
